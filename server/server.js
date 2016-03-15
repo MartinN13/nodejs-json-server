@@ -7,6 +7,14 @@ var router = new Router();
 var http = require("http");
 var url = require("url");
 
+// Load JSON file
+var obj = "";
+
+require('fs').readFile('../salar.json', 'utf8', function (err, data) {
+    if (err) throw err;
+    obj = JSON.parse(data);
+});
+
 /**
  * Wrapper function for sending a JSON response
  *
@@ -39,145 +47,44 @@ router.get("/", (req, res) => {
 });
 
 /**
- * Initialize the game
+ * List all rooms
  *
  * @param Object req The request
  * @param Object res The response
  */
-router.get("/start/:size", (req, res) => {
-
-    // get the value of the parameter :size
-    var size = req.params.size;
-
-    // Init the Gomoku board
-    var message = "The board is initialized.";
-    try {
-        gameBoard.start(size);
-    } catch (e) {
-        message = e.message;
-    }
-
-    // Send the response
-    sendJSONResponse(res, {
-        "message": message,
-        "boardSize": gameBoard.getSize(),
-        "nextPlayer": gameBoard.playerInTurn(),
-        "nextPlayerMarker": gameBoard.playerInTurnMarker()
-    });
+router.get("/room/list", (req, res) => {
+        sendJSONResponse(res, obj);
 });
-
-
 
 /**
- * View the gameboard
+ * List all rooms matching number
  *
  * @param Object req The request
  * @param Object res The response
  */
-router.get("/view", (req, res) => {
-
-    sendJSONResponse(res, {
-        "boardSize": gameBoard.getSize(),
-        "nextPlayer": gameBoard.playerInTurn(),
-        "nextPlayerMarker": gameBoard.playerInTurnMarker(),
-        "boardAscii": gameBoard.asAscii()
-    });
+router.get("/room/view/id/:number", (req, res) => {
+        sendJSONResponse(res, obj);
 });
-
-
 
 /**
- * View the gameboard as ascii.
+ * List all rooms matching house
  *
  * @param Object req The request
  * @param Object res The response
  */
-router.get("/view/ascii", (req, res) => {
-
-    res.writeHead(200, "Content-Type: text/plain");
-    res.write(gameBoard.asAscii()
-        + "\nPlayer in turn is '"
-        + gameBoard.playerInTurn()
-        + "' playing the marker "
-        + gameBoard.playerInTurnMarker()
-        + ".\n");
-    res.end();
+router.get("/room/view/house/:house", (req, res) => {
+        sendJSONResponse(res, obj);
 });
-
-
 
 /**
- * View the gameboard
+ * List all rooms matching search string
  *
  * @param Object req The request
  * @param Object res The response
  */
-router.get("/place/:x/:y", (req, res) => {
-
-    // get the value of the parameter :x and :y
-    var x = Number.parseInt(req.params.x);
-    var y = Number.parseInt(req.params.y);
-
-    // Place the marker
-    var message = "Ok.";
-    try {
-        gameBoard.place(x, y);
-    } catch (e) {
-        message = e.message;
-    }
-
-    sendJSONResponse(res, {
-        "action": "Trying to place " + x + ", " + y,
-        "message": message,
-        "boardSize": gameBoard.getSize(),
-        "nextPlayer": gameBoard.playerInTurn(),
-        "nextPlayerMarker": gameBoard.playerInTurnMarker(),
-        "boardIsFull": gameBoard.isFull(),
-        "playerWon": gameBoard.gameOver()
-    });
-
-    if (gameBoard.gameOver() == "Player X has won!" || gameBoard.gameOver() == "Player Y has won!") {
-        console.log("Game over, clearing gameboard...");
-        gameBoard.clear();
-    }
+router.get("/room/search/:search", (req, res) => {
+        sendJSONResponse(res, obj);
 });
-
-
-
-/**
- * Place a random marker
- *
- * @param Object req The request
- * @param Object res The response
- */
-router.get("/place/random", (req, res) => {
-
-    var position = placeRandom();
-
-    // Place the marker
-    var message = "Ok.";
-    try {
-        gameBoard.place(position[0], position[1]);
-    } catch (e) {
-        message = e.message;
-    }
-
-    sendJSONResponse(res, {
-        "action": "Trying to place " + position[0] + ", " + position[1],
-        "message": message,
-        "boardSize": gameBoard.getSize(),
-        "nextPlayer": gameBoard.playerInTurn(),
-        "nextPlayerMarker": gameBoard.playerInTurnMarker(),
-        "boardIsFull": gameBoard.isFull(),
-        "playerWon": gameBoard.gameOver()
-    });
-
-    if (gameBoard.gameOver() == "Player X has won!" || gameBoard.gameOver() == "Player Y has won!") {
-        console.log("Game over, clearing gameboard...");
-        gameBoard.clear();
-    }
-});
-
 
 /**
  * Create and export the server
