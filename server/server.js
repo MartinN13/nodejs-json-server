@@ -53,7 +53,7 @@ router.get("/", (req, res) => {
  * @param Object res The response
  */
 router.get("/room/list", (req, res) => {
-        sendJSONResponse(res, obj);
+    sendJSONResponse(res, obj);
 });
 
 /**
@@ -63,7 +63,12 @@ router.get("/room/list", (req, res) => {
  * @param Object res The response
  */
 router.get("/room/view/id/:number", (req, res) => {
-        sendJSONResponse(res, obj);
+    var number = req.params.number;
+    var numberMatch = obj.salar.filter(function(sal) {
+        return sal.Salsnr == number;
+    });
+    
+    sendJSONResponse(res, numberMatch);
 });
 
 /**
@@ -73,7 +78,12 @@ router.get("/room/view/id/:number", (req, res) => {
  * @param Object res The response
  */
 router.get("/room/view/house/:house", (req, res) => {
-        sendJSONResponse(res, obj);
+    var house = req.params.house;
+    var houseMatch = obj.salar.filter(function(sal) {
+        return sal.Hus == house;
+    });
+     
+    sendJSONResponse(res, houseMatch);
 });
 
 /**
@@ -83,7 +93,93 @@ router.get("/room/view/house/:house", (req, res) => {
  * @param Object res The response
  */
 router.get("/room/search/:search", (req, res) => {
-        sendJSONResponse(res, obj);
+    var search = String(req.params.search);
+
+    var numberMatch = obj.salar.filter(function(sal) {
+        if (sal.Salsnr != null) {
+            return sal.Salsnr.indexOf(search) !== -1;
+        }
+    });
+
+    var nameMatch = obj.salar.filter(function(sal) {
+        if (sal.Salsnamn != null) {
+            return sal.Salsnamn.indexOf(search) !== -1;
+        }
+    });
+
+    var latMatch = obj.salar.filter(function(sal) {
+        if (sal.Lat != null) {
+            return sal.Lat.indexOf(search) !== -1;
+        }
+    });
+
+    var longMatch = obj.salar.filter(function(sal) {
+        if (sal.Lot != null) {
+            return sal.Lot.indexOf(search) !== -1;
+        }
+    });
+
+    var placeMatch = obj.salar.filter(function(sal) {
+        if (sal.Ort != null) {
+            return sal.Ort.indexOf(search) !== -1;
+        }
+    });
+
+    var houseMatch = obj.salar.filter(function(sal) {
+        if (sal.Hus != null) {
+            return sal.Hus.indexOf(search) !== -1;
+        }
+    });
+
+    var floorMatch = obj.salar.filter(function(sal) {
+        if (sal.Våning != null) {
+            return sal.Våning.indexOf(search) !== -1;
+        }
+    });
+
+    var typeMatch = obj.salar.filter(function(sal) {
+        if (sal.Typ != null) {
+            return sal.Typ.indexOf(search) !== -1;
+        }
+    });
+
+    var sizeMatch = obj.salar.filter(function(sal) {
+        if (sal.Storlek != null) {
+            return sal.Storlek.indexOf(search) !== -1;
+        }
+    });
+
+    var merge = function() {
+        var destination = {},
+            sources = [].slice.call( arguments, 0 );
+        sources.forEach(function( source ) {
+            var prop;
+            for ( prop in source ) {
+                if ( prop in destination && Array.isArray( destination[ prop ] ) ) {
+                    
+                    // Concat Arrays
+                    destination[ prop ] = destination[ prop ].concat( source[ prop ] );
+                    
+                } else if ( prop in destination && typeof destination[ prop ] === "object" ) {
+                    
+                    // Merge Objects
+                    destination[ prop ] = merge( destination[ prop ], source[ prop ] );
+                    
+                } else {
+                    
+                    // Set new values
+                    destination[ prop ] = source[ prop ];
+                    
+                }
+            }
+        });
+        return destination;
+    };
+
+    var searchMatch = merge(numberMatch, houseMatch, nameMatch, latMatch, longMatch,
+                            placeMatch, floorMatch, typeMatch, sizeMatch);
+
+    sendJSONResponse(res, searchMatch);
 });
 
 /**
