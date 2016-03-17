@@ -1,7 +1,7 @@
 #!/usr/bin/env babel-node
 
 /**
- * Main program to run the server.
+ * Main program to run the JSON server.
  */
 
 const VERSION = "1.0";
@@ -31,7 +31,7 @@ Options:
 /**
  * Display helptext about bad usage.
  *
- * @param String message to display.
+ * @param String message to display
  */
 function badUsage(message) {
     console.log(`${message}

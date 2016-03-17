@@ -1,3 +1,7 @@
+/**
+ * The JSON server.
+ */
+
 // A better router to create a handler for all routes
 //import Router from "./router";
 import Router from "./router";
@@ -6,6 +10,47 @@ var router = new Router();
 // Import the http server as base
 var http = require("http");
 var url = require("url");
+
+// Global variables
+var queryKey,
+    queryValue;
+
+/**
+ * Create the server.
+ */
+var server = http.createServer((req, res) => {
+    var ipAddress,
+        urlParts,
+        route,
+        query,
+        queryString;
+
+    // Log incoming requests
+    ipAddress = req.connection.remoteAddress;
+
+    // Check what route is requested
+    var qs = require('querystring');
+ 
+    urlParts = url.parse(req.url, true);
+    route = urlParts.pathname;
+    query = urlParts.query;
+    queryString = qs.stringify(query);
+
+    // Save queryString
+    Object.keys(query).forEach( key => {
+        queryKey = key;
+        queryValue = query[key];
+    });
+
+    if (queryString === "") {
+        console.log("Incoming route " + route + " from ip " + ipAddress);
+    } else {
+        console.log("Incoming route " + route + " from ip " + ipAddress + " with querystring " + queryString);
+    }
+
+    // Let the router take care of all requests
+    router.route(req, res);
+});
 
 // Load JSON file
 var obj = "";
@@ -16,7 +61,7 @@ require('fs').readFile('../salar.json', 'utf8', function (err, data) {
 });
 
 /**
- * Wrapper function for sending a JSON response
+ * Wrapper function for sending a JSON response.
  *
  * @param  Object        res     The response
  * @param  Object/String content What should be written to the response
@@ -47,17 +92,34 @@ router.get("/", (req, res) => {
 });
 
 /**
- * List all rooms
+ * List all rooms.
  *
  * @param Object req The request
  * @param Object res The response
  */
 router.get("/room/list", (req, res) => {
-    sendJSONResponse(res, obj);
+    if (queryKey == "max") {
+      var objFiltered = JSON.stringify(obj, null, "    ").split("\n");
+      var resultsToRemove = (objFiltered.length - 4) / 11 - queryValue;
+    
+      for (var i = 0; i < resultsToRemove * 11; i++) {
+        objFiltered.splice(objFiltered.length - 3, 1);
+      }
+    
+      objFiltered[objFiltered.length - 3] = "        }";
+      objFiltered = objFiltered.join("\n");
+      objFiltered = JSON.parse(objFiltered);
+    
+      queryKey = "";
+    
+      sendJSONResponse(res, objFiltered);
+    } else {
+      sendJSONResponse(res, obj);
+    }
 });
 
 /**
- * List all rooms matching number
+ * List all rooms matching number.
  *
  * @param Object req The request
  * @param Object res The response
@@ -72,7 +134,7 @@ router.get("/room/view/id/:number", (req, res) => {
 });
 
 /**
- * List all rooms matching house
+ * List all rooms matching house.
  *
  * @param Object req The request
  * @param Object res The response
@@ -82,12 +144,29 @@ router.get("/room/view/house/:house", (req, res) => {
     var houseMatch = obj.salar.filter(function(sal) {
         return sal.Hus == house;
     });
-     
-    sendJSONResponse(res, houseMatch);
+
+    if (queryKey == "max") {
+      var objFiltered = JSON.stringify(houseMatch, null, "    ").split("\n");
+      var resultsToRemove = (objFiltered.length - 2) / 11 - queryValue;
+  
+      for (var i = 0; i < resultsToRemove * 11; i++) {
+        objFiltered.splice(objFiltered.length - 3, 1);
+      }
+
+      objFiltered[objFiltered.length - 2] = "    }";
+      objFiltered = objFiltered.join("\n");
+      objFiltered = JSON.parse(objFiltered);
+  
+      queryKey = "";
+
+      sendJSONResponse(res, objFiltered);
+    } else {
+      sendJSONResponse(res, houseMatch);
+    }
 });
 
 /**
- * List all rooms matching search string
+ * List all rooms matching search string.
  *
  * @param Object req The request
  * @param Object res The response
@@ -149,55 +228,28 @@ router.get("/room/search/:search", (req, res) => {
         }
     });
 
-    var merge = function() {
-        var destination = {},
-            sources = [].slice.call( arguments, 0 );
-        sources.forEach(function( source ) {
-            var prop;
-            for ( prop in source ) {
-                if ( prop in destination && Array.isArray( destination[ prop ] ) ) {
-                    
-                    // Concat Arrays
-                    destination[ prop ] = destination[ prop ].concat( source[ prop ] );
-                    
-                } else if ( prop in destination && typeof destination[ prop ] === "object" ) {
-                    
-                    // Merge Objects
-                    destination[ prop ] = merge( destination[ prop ], source[ prop ] );
-                    
-                } else {
-                    
-                    // Set new values
-                    destination[ prop ] = source[ prop ];
-                    
-                }
-            }
-        });
-        return destination;
-    };
-
-    var searchMatch = merge(numberMatch, houseMatch, nameMatch, latMatch, longMatch,
+    var searchMatch = numberMatch.concat(houseMatch, nameMatch, latMatch, longMatch,
                             placeMatch, floorMatch, typeMatch, sizeMatch);
 
-    sendJSONResponse(res, searchMatch);
+    if (queryKey == "max") {
+      var objFiltered = JSON.stringify(searchMatch, null, "    ").split("\n");
+      var resultsToRemove = (objFiltered.length - 2) / 11 - queryValue;
+  
+      for (var i = 0; i < resultsToRemove * 11; i++) {
+        objFiltered.splice(objFiltered.length - 3, 1);
+      }
+
+      objFiltered[objFiltered.length - 2] = "    }";
+      objFiltered = objFiltered.join("\n");
+      objFiltered = JSON.parse(objFiltered);
+  
+      queryKey = "";
+
+      sendJSONResponse(res, objFiltered);
+    } else {
+      sendJSONResponse(res, searchMatch);
+    }
 });
 
-/**
- * Create and export the server
- */
-var server = http.createServer((req, res) => {
-    var ipAddress,
-        route;
-
-    // Log incoming requests
-    ipAddress = req.connection.remoteAddress;
-
-    // Check what route is requested
-    route = url.parse(req.url).pathname;
-    console.log("Incoming route " + route + " from ip " + ipAddress);
-
-    // Let the router take care of all requests
-    router.route(req, res);
-});
-
+// Export the server
 export default server;
