@@ -54,7 +54,6 @@ var server = http.createServer((req, res) => {
 
 // Load JSON file
 var obj = "";
-
 require('fs').readFile('../salar.json', 'utf8', function (err, data) {
     if (err) throw err;
     obj = JSON.parse(data);
@@ -71,6 +70,10 @@ function sendJSONResponse(res, content, code = 200) {
     res.writeHead(code, "Content-Type: application/json");
     res.write(JSON.stringify(content, null, "    "));
     res.end();
+
+    if (debug == 1) {
+      console.log("Sending response: \n" + JSON.stringify(content, null, "    "));
+    }
 }
 
 /**
@@ -80,15 +83,22 @@ function sendJSONResponse(res, content, code = 200) {
  * @param Object res The response
  */
 router.get("/", (req, res) => {
-    res.writeHead(200, "Content-Type: text/plain");
-    res.write("Welcome to the server! This is the API:\n\n"
+    var indexMessage = ("Welcome to the server! This is the API:\n\n"
         + " /                           Display this helptext.\n"
         + " /room/list                  List all rooms.\n"
         + " /room/view/id/:number       View the room with the specified id.\n"
         + " /room/view/house/:house     View every room in a specified house.\n"
         + " /room/search/:search        Search for a room.\n"
     );
+
+    res.writeHead(200, "Content-Type: text/plain");
+    res.write(indexMessage);
     res.end();
+
+    if (debug == 1) {
+      console.log("Sending response: \n" + indexMessage);
+    }    
+
 });
 
 /**

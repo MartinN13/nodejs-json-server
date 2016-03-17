@@ -5,6 +5,7 @@
  */
 
 const VERSION = "1.0";
+global.debug = 0;
 
 // For CLI usage
 var path = require("path");
@@ -64,6 +65,11 @@ while ((arg = args.shift()) !== undefined) {
                 badUsage("--port must be followed by a port number.");
                 process.exit(1);
             }
+            break;
+
+        case "--debugg":
+            console.log("Debugging on.");
+            debug = 1;
             break;
 
         default:
