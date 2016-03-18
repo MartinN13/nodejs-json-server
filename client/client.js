@@ -54,6 +54,9 @@ class JSONClient {
      *
      */
     list() {
+        if (debug == 1) {
+            console.log("Sending URL '" + this.server + "/room/list" + "' to client.");
+        }
         return this.httpGet("/room/list");
     }
 
@@ -64,6 +67,9 @@ class JSONClient {
      *
      */
     view(id) {
+        if (debug == 1) {
+            console.log("Sending URL '" + this.server + "/room/view/id/" + id + "' to client.");
+        }
         return this.httpGet("/room/view/id/" + id);
     }
 
@@ -74,6 +80,9 @@ class JSONClient {
      *
      */
     house(house) {
+        if (debug == 1) {
+            console.log("Sending URL '" + this.server + "/room/view/house/" + house + "' to client.");
+        }
         return this.httpGet("/room/view/house/" + house);
     }
 
@@ -84,6 +93,9 @@ class JSONClient {
      *
      */
     search(search) {
+        if (debug == 1) {
+            console.log("Sending URL '" + this.server + "/room/search/" + search + "' to client.");
+        }
         return this.httpGet("/room/search/" + search);
     }
 }
