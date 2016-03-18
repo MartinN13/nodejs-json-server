@@ -53,11 +53,18 @@ class JSONClient {
      * @return Promise
      *
      */
-    list() {
-        if (debug == 1) {
-            console.log("Sending URL '" + this.server + "/room/list" + "' to client.");
+    list(max) {
+        if (debug == 1 && !isNan(max)) {
+            console.log("Sending URL '" + this.server + "/room/list?max" + max + "' to client.");
+        } else if (debug == 1) {
+            console.log("Sending URL '" + this.server + "/room/list" + "' to client.");   
         }
-        return this.httpGet("/room/list");
+
+        if (!isNaN(max)) {
+            return this.httpGet("/room/list?max=" + max);
+        } else {
+            return this.httpGet("/room/list");
+        }
     }
 
     /**
@@ -79,11 +86,18 @@ class JSONClient {
      * @return Promise
      *
      */
-    house(house) {
-        if (debug == 1) {
+    house(house, max) {
+        if (debug == 1 && !isNaN(max)) {
+            console.log("Sending URL '" + this.server + "/room/view/house/" + house + "?max=" + max + "' to client.");
+        } else if (debug == 1) {
             console.log("Sending URL '" + this.server + "/room/view/house/" + house + "' to client.");
         }
-        return this.httpGet("/room/view/house/" + house);
+
+        if (!isNaN(max)) {
+            return this.httpGet("/room/view/house/" + house + "?max=" + max);
+        } else {
+            return this.httpGet("/room/view/house/" + house);
+        }
     }
 
     /**
@@ -92,11 +106,18 @@ class JSONClient {
      * @return Promise
      *
      */
-    search(search) {
-        if (debug == 1) {
+    search(search, max) {
+        if (debug == 1 && !isNaN(max)) {
+            console.log("Sending URL '" + this.server + "/room/search/" + search + "?max=" + max + "' to client.");
+        } else if (debug == 1) {
             console.log("Sending URL '" + this.server + "/room/search/" + search + "' to client.");
         }
-        return this.httpGet("/room/search/" + search);
+
+        if (!isNaN(max)) {
+            return this.httpGet("/room/search/" + search + "?max=" + max);
+        } else {
+            return this.httpGet("/room/search/" + search);
+        }
     }
 }
 

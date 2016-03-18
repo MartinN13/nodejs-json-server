@@ -134,7 +134,7 @@ search <string> View the details of all matching rooms (one per row).`);
              break;
 
         case "list":
-            client.list()
+            client.list(args[1])
             .then(value => {
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
                 console.log(value);
@@ -160,7 +160,7 @@ search <string> View the details of all matching rooms (one per row).`);
             break;
 
         case "house":
-            client.house(args[1])
+            client.house(args[1], args[2])
             .then(value => {
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
                 console.log(value);
@@ -173,7 +173,7 @@ search <string> View the details of all matching rooms (one per row).`);
             break;
 
         case "search":
-            client.search(args[1])
+            client.search(args[1], args[2])
             .then(value => {
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
                 console.log(value);
