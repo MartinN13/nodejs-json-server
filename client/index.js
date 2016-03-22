@@ -163,7 +163,12 @@ search <string> View the details of all matching rooms (one per row).`);
             client.house(args[1], args[2])
             .then(value => {
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
-                console.log(value);
+                value = value.split("\n");
+                var i = 2;
+                while (i < value.length) {
+                    console.log(value[i] + ", " + value[i+1].substring(8, value[i+1].length));
+                    i = i + 11;
+                };
                 rl.prompt();
             })
             .catch(err => {
@@ -176,7 +181,12 @@ search <string> View the details of all matching rooms (one per row).`);
             client.search(args[1], args[2])
             .then(value => {
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
-                console.log(value);
+                value = value.split("\n");
+                var i = 2;
+                while (i < value.length) {
+                    console.log(value[i] + ", " + value[i+1].substring(8, value[i+1].length));
+                    i = i + 11;
+                };
                 rl.prompt();
             })
             .catch(err => {
