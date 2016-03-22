@@ -137,7 +137,12 @@ search <string> View the details of all matching rooms (one per row).`);
             client.list(args[1])
             .then(value => {
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
-                console.log(value);
+                value = value.split("\n");
+                var i = 3;
+                while (i < value.length - 1) {
+                    console.log(value[i].substring(4) + ", " + value[i+1].substring(12));
+                    i = i + 11;
+                };
                 rl.prompt();
             })
             .catch(err => {
@@ -165,8 +170,8 @@ search <string> View the details of all matching rooms (one per row).`);
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
                 value = value.split("\n");
                 var i = 2;
-                while (i < value.length) {
-                    console.log(value[i] + ", " + value[i+1].substring(8, value[i+1].length));
+                while (i < value.length - 1) {
+                    console.log(value[i] + ", " + value[i+1].substring(8));
                     i = i + 11;
                 };
                 rl.prompt();
@@ -183,8 +188,8 @@ search <string> View the details of all matching rooms (one per row).`);
                 value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
                 value = value.split("\n");
                 var i = 2;
-                while (i < value.length) {
-                    console.log(value[i] + ", " + value[i+1].substring(8, value[i+1].length));
+                while (i < value.length - 1) {
+                    console.log(value[i] + ", " + value[i+1].substring(8));
                     i = i + 11;
                 };
                 rl.prompt();
