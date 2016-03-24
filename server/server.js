@@ -268,8 +268,114 @@ router.get("/room/search/:search", (req, res) => {
  * @param Object res The response
  */
 router.get("/room/searchp/:search", (req, res) => {
-    // Do the matches like above, but concat them in the order of importance and add an importance value
-    // Every match should first check if the whole string can be matched, if so increase importance value
+    var search = String(req.params.search);
+
+    var numberMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Salsnr != null) {
+            return sal.Salsnr == search;
+        }
+    });
+
+    var nameMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Salsnamn != null) {
+            return sal.Salsnamn == search;
+        }
+    });
+
+    var latMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Lat != null) {
+            return sal.Lat == search;
+        }
+    });
+
+    var longMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Lot != null) {
+            return sal.Lot == search;
+        }
+    });
+
+    var placeMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Ort != null) {
+            return sal.Ort == search;
+        }
+    });
+
+    var houseMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Hus != null) {
+            return sal.Hus == search;
+        }
+    });
+
+    var floorMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Våning != null) {
+            return sal.Våning == search;
+        }
+    });
+
+    var typeMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Typ != null) {
+            return sal.Typ == search;
+        }
+    });
+
+    var sizeMatchExact = obj.salar.filter(function(sal) {
+        if (sal.Storlek != null) {
+            return sal.Storlek == search;
+        }
+    });
+
+    function relevance(score, match) {
+      if (match.length > 0) {
+        score = score + 0.5;
+      }
+      return score;
+    }
+
+    var numberMatchExactScore = 0.0,
+        houseMatchExactScore = 0.0,
+        nameMatchExactScore = 0.0,
+        latMatchExactScore = 0.0,
+        longMatchExactScore = 0.0,
+        placeMatchExactScore = 0.0,
+        floorMatchExactScore = 0.0,
+        typeMatchExactScore = 0.0,
+        sizeMatchExactScore = 0.0;
+
+    numberMatchExactScore = relevance(numberMatchExactScore, numberMatchExact);
+    houseMatchExactScore = relevance(houseMatchExactScore, houseMatchExact);
+    nameMatchExactScore = relevance(nameMatchExactScore, nameMatchExact);
+    latMatchExactScore = relevance(latMatchExactScore, latMatchExact);
+    longMatchExactScore = relevance(longMatchExactScore, longMatchExact);
+    placeMatchExactScore = relevance(placeMatchExactScore, placeMatchExact);
+    floorMatchExactScore = relevance(floorMatchExactScore, floorMatchExact);
+    typeMatchExactScore = relevance(typeMatchExactScore, typeMatchExact);
+    sizeMatchExactScore = relevance(sizeMatchExactScore, sizeMatchExact);
+
+    // Next add 0.3(?) if something partially matches
+
+    // How do I return the score with each match? Maybe add a json item named score?
+
+    var searchMatch = numberMatchExact.concat(houseMatchExact, nameMatchExact, latMatchExact, longMatchExact,
+                            placeMatchExact, floorMatchExact, typeMatchExact, sizeMatchExact);
+
+    if (queryKey == "max") {
+      var objFiltered = JSON.stringify(searchMatch, null, "    ").split("\n");
+      var resultsToRemove = (objFiltered.length - 2) / 11 - queryValue;
+  
+      for (var i = 0; i < resultsToRemove * 11; i++) {
+        objFiltered.splice(objFiltered.length - 3, 1);
+      }
+
+      objFiltered[objFiltered.length - 2] = "    }";
+      objFiltered = objFiltered.join("\n");
+      objFiltered = JSON.parse(objFiltered);
+  
+      queryKey = "";
+
+      sendJSONResponse(res, objFiltered);
+    } else {
+      sendJSONResponse(res, searchMatch);
+    }
     
 });
 
