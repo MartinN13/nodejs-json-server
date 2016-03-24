@@ -67,7 +67,7 @@ while ((arg = args.shift()) !== undefined) {
             }
             break;
 
-        case "--debugg":
+        case "--debug2":
             console.log("Debugging on.");
             debug = 1;
             break;

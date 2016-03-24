@@ -261,5 +261,17 @@ router.get("/room/search/:search", (req, res) => {
     }
 });
 
+/**
+ * List all rooms matching search string with priority sorting.
+ *
+ * @param Object req The request
+ * @param Object res The response
+ */
+router.get("/room/searchp/:search", (req, res) => {
+    // Do the matches like above, but concat them in the order of importance and add an importance value
+    // Every match should first check if the whole string can be matched, if so increase importance value
+    
+});
+
 // Export the server
 export default server;
