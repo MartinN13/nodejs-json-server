@@ -360,39 +360,39 @@ router.get("/room/searchp/:search", (req, res) => {
     sizeMatchExactScore = relevanceExact(sizeMatchExactScore, sizeMatchExact, 0.2);
 
     for (var element in numberMatchExact) {
-        numberMatchExact[element].Poäng = numberMatchExactScore;
+        numberMatchExact[element].Sökrelevans = numberMatchExactScore;
     }
 
     for (element in houseMatchExact) {
-        houseMatchExact[element].Poäng = houseMatchExactScore;
+        houseMatchExact[element].Sökrelevans = houseMatchExactScore;
     }
 
     for (element in nameMatchExact) {
-        nameMatchExact[element].Poäng = nameMatchExactScore;
+        nameMatchExact[element].Sökrelevans = nameMatchExactScore;
     }
 
     for (element in latMatchExact) {
-        latMatchExact[element].Poäng = latMatchExactScore;
+        latMatchExact[element].Sökrelevans = latMatchExactScore;
     }
 
     for (element in longMatchExact) {
-        longMatchExact[element].Poäng = longMatchExactScore;
+        longMatchExact[element].Sökrelevans = longMatchExactScore;
     }
 
     for (element in placeMatchExact) {
-        placeMatchExact[element].Poäng = placeMatchSExactcore;
+        placeMatchExact[element].Sökrelevans = placeMatchExactScore;
     }
 
     for (element in floorMatchExact) {
-        floorMatchExact[element].Poäng = floorMatchExactScore;
+        floorMatchExact[element].Sökrelevans = floorMatchExactScore;
     }
 
     for (element in typeMatchExact) {
-        typeMatchExact[element].Poäng = typeMatchExactScore;
+        typeMatchExact[element].Sökrelevans = typeMatchExactScore;
     }
 
     for (element in sizeMatchExact) {
-        sizeMatchExact[element].Poäng = sizeMatchExactScore;
+        sizeMatchExact[element].Sökrelevans = sizeMatchExactScore;
     }
 
     // Partial matches
@@ -478,39 +478,39 @@ router.get("/room/searchp/:search", (req, res) => {
     sizeMatchScore = relevance(sizeMatchScore, sizeMatch, 0.2);
 
     for (element in numberMatch) {
-        numberMatch[element].Poäng = numberMatchScore;
+        numberMatch[element].Sökrelevans = numberMatchScore;
     }
 
     for (element in houseMatch) {
-        houseMatch[element].Poäng = houseMatchScore;
+        houseMatch[element].Sökrelevans = houseMatchScore;
     }
 
     for (element in nameMatch) {
-        nameMatch[element].Poäng = nameMatchScore;
+        nameMatch[element].Sökrelevans = nameMatchScore;
     }
 
     for (element in latMatch) {
-        latMatch[element].Poäng = latMatchScore;
+        latMatch[element].Sökrelevans = latMatchScore;
     }
 
     for (element in longMatch) {
-        longMatch[element].Poäng = longMatchScore;
+        longMatch[element].Sökrelevans = longMatchScore;
     }
 
     for (element in placeMatch) {
-        placeMatch[element].Poäng = placeMatchScore;
+        placeMatch[element].Sökrelevans = placeMatchScore;
     }
 
     for (element in floorMatch) {
-        floorMatch[element].Poäng = floorMatchScore;
+        floorMatch[element].Sökrelevans = floorMatchScore;
     }
 
     for (element in typeMatch) {
-        typeMatch[element].Poäng = typeMatchScore;
+        typeMatch[element].Sökrelevans = typeMatchScore;
     }
 
     for (element in sizeMatch) {
-        sizeMatch[element].Poäng = sizeMatchScore;
+        sizeMatch[element].Sökrelevans = sizeMatchScore;
     }
 
     // Concat is ordered by priority of each field
@@ -545,6 +545,9 @@ router.get("/room/searchp/:search", (req, res) => {
       sendJSONResponse(res, searchMatch);
     }
     
+    for (element in searchMatch) {
+        delete searchMatch[element].Sökrelevans;
+    }
 });
 
 // Export the server

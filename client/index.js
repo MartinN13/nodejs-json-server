@@ -200,6 +200,24 @@ search <string> View the details of all matching rooms (one per row).`);
             });
             break;
 
+        case "searchp":
+            client.searchp(args[1], args[2])
+            .then(value => {
+                value = value.replace(/[{},"]/g, "").replace(/[\[\]']+/g,'')
+                value = value.split("\n");
+                var i = 2;
+                while (i < value.length - 1) {
+                    console.log(value[i] + ", " + value[i+1].substring(8) + ", " + value[i+9].substring(8));
+                    i = i + 12;
+                };
+                rl.prompt();
+            })
+            .catch(err => {
+                console.log("FAILED: Could not list rooms.\nDetails: " + err);
+                rl.prompt();
+            });
+            break;
+
         case "url":
             console.log("Use this url to view the server in a browser:\n" + server + ":" + port);
             rl.prompt();

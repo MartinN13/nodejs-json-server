@@ -119,6 +119,26 @@ class JSONClient {
             return this.httpGet("/room/search/" + search);
         }
     }
+
+    /**
+     * Search all rooms with priority.
+     *
+     * @return Promise
+     *
+     */
+    searchp(search, max) {
+        if (debug == 1 && !isNaN(max)) {
+            console.log("Sending URL '" + this.server + "/room/searchp/" + search + "?max=" + max + "' to client.");
+        } else if (debug == 1) {
+            console.log("Sending URL '" + this.server + "/room/searchp/" + search + "' to client.");
+        }
+
+        if (!isNaN(max)) {
+            return this.httpGet("/room/searchp/" + search + "?max=" + max);
+        } else {
+            return this.httpGet("/room/searchp/" + search);
+        }
+    }
 }
 
 export default JSONClient;
